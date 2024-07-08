@@ -8,10 +8,16 @@
     "build": "npx tsc"
   },
   "dependencies": {
+    "@types/cors": "^2.8.17",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
+    "core-types": "^3.1.0",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.4.5",
     "express": "~4.16.1",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "~1.9.1"
   },
   "description": "",
@@ -20,7 +26,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
+    "@types/express-session": "^1.18.0",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.14.10",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",

@@ -1,20 +1,43 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express, { Express } from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+import session from "express-session";
+import allRoutes from "./routes/allRoutes";
+import authRoutes from "./routes/authRoutes";
+import authMiddleware from "./middleware/authMiddleware";
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
-var app = express();
 
-app.use(logger('dev'));
+dotenv.config();
+mongoose.set('strictQuery', true);
+
+const app: Express = express();
+
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(session({
+   secret: 'your_secret_key',
+   resave: false,
+   saveUninitialized: true,
+   cookie: { secure: false } 
+ }));
 
-module.exports = app;
+ app.use('/api/auth', authRoutes);
+app.use('/api/posts', authMiddleware, allRoutes); 
+
+const connect = async (): Promise<void> => {
+try { await mongoose.connect(process.env.MONGO_URI!);
+console.log('Connected to MongoDB');
+} catch (error: any) { if (!process.env.MONGO_URI)  
+throw new error('MongoDB connection error:', error) }};
+
+
+const port: string | undefined = process.env.PORT;
+if (!port) { process.exit(1) };
+app.listen(parseInt(port), async () => { await connect();
+console.log(`Server listening on port ${port}`) });
