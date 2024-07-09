@@ -9,7 +9,6 @@ import { deletePost } from "../controllers/deleteControllers/deletePost";
 import {commentPost} from "../controllers/commentControllers/commentPost";
 
 
-
 const router = Router();
 
 router.post('/', authMiddleware, createPost);

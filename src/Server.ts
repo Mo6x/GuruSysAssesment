@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import session from "express-session";
+import { errorHandler } from "./utils/errorHandler";
 import allRoutes from "./routes/allRoutes";
 import authRoutes from "./routes/authRoutes";
 import authMiddleware from "./middleware/authMiddleware";
@@ -26,9 +27,10 @@ app.use(session({
    saveUninitialized: true,
    cookie: { secure: false } 
  }));
-
+ 
+ app.use(errorHandler);
  app.use('/api/auth', authRoutes);
-app.use('/api/posts', authMiddleware, allRoutes); 
+ app.use('/api/posts', authMiddleware, allRoutes); 
 
 const connect = async (): Promise<void> => {
 try { await mongoose.connect(process.env.MONGO_URI!);
