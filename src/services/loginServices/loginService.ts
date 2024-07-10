@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../../models/User";
 
 
-export const loginUser = async (email: string, password: string): Promise<string | null> => {
+export const loginUser = async (email: string, password: string): Promise<any | null> => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error('Invalid email or password.');
@@ -13,8 +13,8 @@ export const loginUser = async (email: string, password: string): Promise<string
     throw new Error('Invalid email or password.');
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-  return token;
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: process.env.EXPIRESIN||"1h"});
+  return {token,user_id:user._id};
 };
 
 export default loginUser;

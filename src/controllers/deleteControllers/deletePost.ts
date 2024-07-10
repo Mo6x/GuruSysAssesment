@@ -14,6 +14,7 @@ export const deletePost = async (req: Request, res: Response) => {
     await deletePostService(id, req.user.id);
     res.status(200).json({ message: 'Post deleted' });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ error: 'Error deleting post' });
   }
 };

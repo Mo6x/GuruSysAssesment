@@ -1,4 +1,6 @@
 import { Router } from "express";
+import multer from 'multer';
+
 import { authMiddleware } from "../middleware/authMiddleware";
 import { getPosts } from "../controllers/getControlles/getPost";
 import { getPost } from "../controllers/getController/getPost";
@@ -10,11 +12,12 @@ import {commentPost} from "../controllers/commentControllers/commentPost";
 
 
 const router = Router();
+const upload = multer({ dest: 'uploads/' });
 
-router.post('/', authMiddleware, createPost);
 router.get('/', getPosts);
 router.get('/:id', getPost);
-router.put('/:id', authMiddleware, updatePost);
+router.post('/', authMiddleware, upload.array('images', 5), createPost);
+router.patch('/:id', authMiddleware, updatePost);
 router.delete('/:id', authMiddleware, deletePost);
 router.post('/:id/like', authMiddleware, likePost);
 router.post('/:id/comment', authMiddleware, commentPost);

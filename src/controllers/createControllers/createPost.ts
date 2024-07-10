@@ -28,32 +28,21 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: Request | any, res: Response) => {
   try {
+    console.log(req.body);
+    
     const { title, content, description } = req.body;
-
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
     const author = req.user.id;
 
-    upload.array('images', 5)(req, res, async (err: any) => {
-      if (err instanceof multer.MulterError) {
-        return res.status(400).json({ error: 'Error uploading files' });
-      } else if (err) {
-        return res.status(500).json({ error: 'Server error' });
-      }
-
-      try {
-        const post = await createPostService(title, content, description, author, req.files as Express.Multer.File[]);
-        res.status(201).json(post);
-      } catch (error) {
-        res.status(400).json({ error: 'Error creating post' });
-      }
-    });
-
+    if (req.files && req.files.length > 0) {
+      const post = await createPostService(title, content, description, author, req.files);
+      return res.status(201).json(post);
+    } else {
+      const post = await createPostService(title, content, description, author);
+      return res.status(200).json(post);
+    }
   } catch (error) {
-    res.status(400).json({ error: 'Error creating post' });
+    return res.status(500).json({ error: 'Error creating post' });
   }
 };

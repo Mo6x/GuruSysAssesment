@@ -27,10 +27,14 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id) as any
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid token.' });
+    }
+
+    if (!user && !user?.id) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     req.user = user;
